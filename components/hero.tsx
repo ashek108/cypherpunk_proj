@@ -46,7 +46,7 @@ function Hero() {
 
     <div className="w-full h-fit mt-[3rem] mb-[3rem] pb-[1rem] pt-[1rem] flex justify-center items-start  "> 
 
-      <div className="absolute w-[80vh] h-[20vh] sm:w-[70vw] sm:h-[70vh] rounded-full bg-conic from-blue-500 to-purple-600 blur-[12rem]  ">
+      <div className="absolute w-[80vw] h-[20vh] sm:w-[70vw] sm:h-[70vh] rounded-full bg-conic from-blue-500 to-purple-600 blur-[12rem]  ">
       </div>
 
       <div className="relative sm:w-[70vw] w-[75vh] p-[0.4rem]   rounded-xl object-contain border-[1px] bg-gray-50/1 backdrop-blur-2xl border-amber-50/16">
