@@ -78,16 +78,13 @@ function Navbar() {
               </>
             ) : (
               <>
-                <svg 
+                <img 
+                  src="/phantom.png" 
+                  alt="Phantom" 
                   width="20" 
-                  height="20" 
-                  viewBox="0 0 24 24" 
-                  fill="currentColor"
+                  height="20"
                   className="text-white"
-                >
-                  <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
-                  <path d="M9 12l2 2 4-4" stroke="white" strokeWidth="2" fill="none"/>
-                </svg>
+                />
                 <span>Connect Phantom</span>
               </>
             )}
