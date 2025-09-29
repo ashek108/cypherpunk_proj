@@ -26,3 +26,41 @@
   scrollbar-width: thin;
   scrollbar-color: #3b82f6 #000000;
 }
+
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-in-out;
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+
+.wallet-adapter-modal {
+  @apply bg-black/95 backdrop-blur-lg border border-white/20 rounded-lg;
+}
+.wallet-adapter-button {
+  @apply bg-gradient-to-r from-purple-900 to-blue-900 text-white rounded-lg border border-white/20 hover:scale-105 transition-transform duration-200;
+}
