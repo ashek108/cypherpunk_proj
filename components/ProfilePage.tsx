@@ -1,4 +1,3 @@
-import Image from "next/image"
 
 function ProfilePage({username}:{username:string}) {
   return (
@@ -72,7 +71,28 @@ function ProfilePage({username}:{username:string}) {
               </div>
             </div>
 
- 
+            {/* Starting aboutme */}
+            <div className="w-full h-fit flex justify-start">
+              <div className="w-[80%] pl-5 pt-5 pb-5">
+                <p className="text-white font">
+                  It is important to view knowledge as sort of a semantic tree make sure you understand the fundamental principles
+                </p>
+
+              </div>
+            </div>
+
+            {/* starting PostMIDNAVBAR */}
+            <div className="w-full flex justify-center h-[3.5rem] border-b-[1px] border-white/16 hover:bg-white/3  sticky top-0 z-9999" >
+              <div className="w-[5rem] border-b-3 border-blue-500 flex justify-center items-baseline">
+                <h1 className="text-white pt-4 text-xl font-semibold font-sans">Posts</h1>
+              </div>
+            </div>
+
+            {/* test FOR TWEETS  INCOMING*/}
+            <div className="w-full h-[500vh]" ></div>
+
+        
+        
         </div>
     </div>
   )

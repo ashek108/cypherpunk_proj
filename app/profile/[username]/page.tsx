@@ -1,4 +1,5 @@
 
+
 import ProfilePage from "@/components/ProfilePage"
 
 export default async function Profile({params}:{params:{username:string}}){

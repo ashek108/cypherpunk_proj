@@ -4,27 +4,16 @@
     scroll-behavior: smooth;
 }
 
+
+
+
 ::-webkit-scrollbar {
-  width: 12px;
-}
-
-::-webkit-scrollbar-track {
-  background: #000000;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: #3b82f6;
-  border-radius: 6px;
-  border: none;
-}
-
-::-webkit-scrollbar-button {
   display: none;
 }
 
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #3b82f6 #000000;
+html, body {
+  scrollbar-width: none;      
+  -ms-overflow-style: none;  
 }
 
 
