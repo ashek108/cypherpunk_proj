@@ -35,12 +35,12 @@ function Navbar() {
         <button 
           onClick={handleWalletClick}
           disabled={connecting}
-          className={`relative group h-[32px] flex items-center  px-6 py-2 font-semibold text-white rounded-lg transition-all duration-300 mr-0 sm:mr-6 shadow-lg ${
+          className={`relative group h-[32px] mr-1 sm:mr:0 flex items-center  px-6 py-2 font-semibold text-white rounded-lg transition-all duration-300 sm:mr-6 shadow-lg ${
             connected 
               ? 'bg-gradient-to-r from-green-600 via-emerald-600 to-green-600 hover:from-green-500 hover:via-emerald-500 hover:to-green-500 hover:shadow-green-500/25' 
               : connecting
               ? 'bg-gradient-to-r from-gray-600 via-gray-500 to-gray-600 cursor-not-allowed'
-              : 'bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 hover:from-purple-500 hover:via-blue-500 hover:to-purple-500 hover:shadow-purple-500/25'
+              : 'bg-[#155dfc]'
           }`}
         >
           <div className={`absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm ${
