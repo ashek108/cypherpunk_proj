@@ -12,7 +12,7 @@ function Hero() {
       </div>
 
     <div className="w-full h-[5rem]  hidden md:flex justify-center items-center">
-      <a  href="https://x.com" className=" bg-linear-65 bg-gradient-to-l from-purple-900 to-blue-900 backdrop-blur-lg cursor-pointer rounded-4xl h-[2.5rem] w-[25rem] border-[1px]  flex items-center justify-center">
+      <a  href="/home" className=" bg-linear-65 bg-gradient-to-l from-purple-900 to-blue-900 backdrop-blur-lg cursor-pointer rounded-4xl h-[2.5rem] w-[25rem] border-[1px]  flex items-center justify-center">
         <div className="pl-2 pr-2 w-fit space-x-2 flex shrink-0 ">
           <span><img src="/google-gemini-icon.svg" className="h-[1.5rem] select-none w-[1.5rem]"  /></span>
           <h1 className="text-white font-semibold select-none" >Join the future of doom scrolling Now!</h1>
