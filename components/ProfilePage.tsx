@@ -9,7 +9,9 @@ function ProfilePage({username}:{username:string}) {
             <div className="relative w-full max-h-[150px] overflow-hidden">
                 <img className="w-full h-auto object-cover" 
                 src="/TempProfileHeaderPhoto.png" 
-                />  
+                />
+
+                {/* button for going back to home   */}
                 <button className="absolute top-4 left-5 rounded-4xl bg-black/60 flex justify-center items-center w-7 h-7 sm:w-9 sm:h-9"> 
 
                   {/* back arrow svg here !*/}
