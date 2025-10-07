@@ -49,8 +49,8 @@ export const follows = pgTable("follows",{
 },(table)=>{
     return {
         pk:primaryKey({columns:[table.followerId,table.followedId]}),
-        followerIdIdx:index("follows_follower_id_idx").on(table.followedId),
-        followedIdIdx:index("follows_follower_id_idx").on(table.followedId)
+        followerIdIdx:index("follows_follower_id_idx").on(table.followerId),
+        followedIdIdx:index("follows_followed_id_idx").on(table.followedId)
     };
 })
 
