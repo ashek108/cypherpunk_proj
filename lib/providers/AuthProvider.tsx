@@ -23,7 +23,7 @@ export default function AuthProvider({children}:{children:React.ReactNode}){
     const router = useRouter();
     const supabase = createBrowserClient()
     const [user,setUser] = useState<User|null>(null)
-    const [loading,setLoading] = useState<boolean>(true);
+    const [loading,setLoading] = useState<boolean>(false);
 
     useEffect(()=>{
         const {data} = supabase.auth.onAuthStateChange((event,session)=>{

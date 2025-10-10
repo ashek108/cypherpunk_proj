@@ -1,6 +1,8 @@
 "use client"
 import { useAuth } from "@/lib/providers/AuthProvider";
 import { useState } from "react";
+import SubmitButton from "../ui/SubmitButton";
+import Link from "next/link";
 
 interface AuthFormProps {
     type:"login"|"signup";
@@ -43,9 +45,19 @@ export default function AuthForm({type}:AuthFormProps) {
             </div>
             <div className="flex flex-col gap-1">
                 <label htmlFor="password">Password</label>
-                <input type="text" name="password" id="password" autoComplete="password" value={password} onChange={e => setPassword(e.target.value)} className="rounded-2xl border border-gray-300 p-2" />
+                <input type="text" name="password" id="password" autoComplete={type == "signup"?"new-password":"current-password"} value={password} onChange={e => setPassword(e.target.value)} className="rounded-2xl border border-gray-300 p-2" />
             </div>
-        
+        <SubmitButton loading={loading} className="w-max px-8">
+            {type == "signup"?"Sign Up":"Login"}
+        </SubmitButton>
+        <p>
+            {type == "signup"?"Already have an account?":"Don't have an account?"}
+            <Link href={`/${type=="signup"?'login':'sign-up'}`}
+            className="ml-2 text-blue-500 "
+            >
+            {type == "signup"?"Login":"Sign Up"}
+            </Link>
+        </p>
         </form>
     )
 }
