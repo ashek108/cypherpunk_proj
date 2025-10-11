@@ -10,8 +10,8 @@ interface AuthConnection{
     user:User|null,
     loading:boolean,
     handleSignOut:()=>Promise<void> ;
-    handleLogin:(email:string,password:string) => Promise<void>;
-    handleSignUp:(email:string,username:string,password:string)=> Promise<void>;
+    handleLogin:(email:string,password:string) => Promise<{success:boolean}>;
+    handleSignUp:(email:string,username:string,password:string)=> Promise<{success:boolean}>;
     updateUser:(username:string)=> Promise<{success:boolean}>;
 }
 
@@ -53,16 +53,19 @@ export default function AuthProvider({children}:{children:React.ReactNode}){
     async function handleLogin(email:string,password:string){
         setLoading(true)
         const {error} = await supabase.auth.signInWithPassword({email,password});
+        setLoading(false)
         if(error){
             toast.error(error.message)
-
+            return {success:false}
+            
         }
         else{
             router.refresh()
+            return {success:true}
 
         }
 
-        setLoading(false)
+        
 
     }
 
@@ -71,19 +74,20 @@ export default function AuthProvider({children}:{children:React.ReactNode}){
         const {error} = await supabase.auth.signUp({email,password,options:{
             data:{username}
         }});
+        setLoading(false)
         if(error){
             if(error.message == "Database error saving new user"){
                 toast.error("username already taken")
             }
             toast.error(error.message)
-
+            return {success:false}
         }
         else{
             router.refresh()
-
+            return {success:false}
         }
 
-        setLoading(false)
+        
 
     }
 
