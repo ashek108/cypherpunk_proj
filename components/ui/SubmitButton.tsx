@@ -17,7 +17,7 @@ export default function SubmitButton({ className,children,loading}:SubmitButtonP
 
         {children}
 
-        {(loading||pending) && <Spinner className="h-3 w-3" />}
+        {(loading||pending) && <Spinner className="!h-2 !w-2" />}
         
         </button>
     )

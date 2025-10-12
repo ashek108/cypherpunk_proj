@@ -29,7 +29,7 @@ export default function AuthForm({type}:AuthFormProps) {
             }
         }
         if(type == 'signup'){
-            const {success} = await  handleLogin(email,password)
+            const {success} = await  handleSignUp(email,username,password)
             if (success){
                 router.replace("/home")
                 
