@@ -1,9 +1,11 @@
 "use client"
-import React from 'react'
+import React, { useRef } from 'react'
 import SubmitButton from '../ui/SubmitButton';
 import RequiresAuth from '../auth/RequiresAuth';
 import Avatar from '../ui/Avatar';
 import { useAuth } from '@/lib/providers/AuthProvider';
+import { createPost } from '@/lib/actions/createPost';
+import { toast } from 'sonner';
 
 interface NewPostForm{
     className?:string;
@@ -14,12 +16,23 @@ interface NewPostForm{
 
 export default function NewPostForm({parentId,onPostCreated,autoFocus=false,className}:NewPostForm) {
   const {user} = useAuth()
+  const ref = useRef<HTMLFormElement>(null)
   async function handleFormAction(formData:FormData){
-    
+    const {success}= await createPost(formData)
+    if(success){
+      toast("Post Created")
+      if(onPostCreated){
+        onPostCreated()
+      }
+      ref?.current?.reset()
+    }
+    else{
+      toast.error("Post couldn't be created!")
+    }
   }
   return (
     <form className={`border-b border-gray-200 p-4 ${className}`}
-    action={handleFormAction}
+    action={handleFormAction} ref={ref}
     >
         <div className='mb-4 flex w-full items-start gap-4'>
             <Avatar username={user?.user_metadata?.username} profileId={user?.id}/>

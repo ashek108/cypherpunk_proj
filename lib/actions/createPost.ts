@@ -3,6 +3,9 @@ import {z} from "zod"
 import { getServerUserId } from "../auth/getServerUserId";
 import { db, hashtags, postHashtags, posts } from "../db";
 import { hashtagRegex } from "../constants";
+import { revalidatePath } from "next/cache";
+
+
 
 const createPostSchema = z.object({
     content:z.string().min(1).max(250),
@@ -22,7 +25,13 @@ export async function createPost(formData:FormData){
             parentId:parentIdSubmission,
         })
         await createPostRecord(userId,content,parentId)
+        if(parentId){
+            revalidatePath(`/post/${parentId}`)
+        }
+        revalidatePath("/")
+        return {success:true}
     } catch (error) {
+        return {success:false}
         
     }
 }
