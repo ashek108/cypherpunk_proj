@@ -1,3 +1,4 @@
+"use client"
 import { useAuth } from "@/lib/providers/AuthProvider"
 import {useRouter} from "next/navigation"
 import React from "react"

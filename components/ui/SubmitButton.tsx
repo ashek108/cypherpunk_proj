@@ -4,7 +4,7 @@ import { useFormStatus } from "react-dom";
 import Spinner from "./Spinner";
 
 interface SubmitButtonProps{
-    className:string,
+    className?:string,
     children:React.ReactNode,
     loading?:boolean,
 }
