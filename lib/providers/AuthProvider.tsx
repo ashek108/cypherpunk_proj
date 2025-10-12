@@ -71,7 +71,7 @@ export default function AuthProvider({children}:{children:React.ReactNode}){
 
     async function handleSignUp(email:string,username:string,password:string){
         setLoading(true)
-        const {error} = await supabase.auth.signUp({email,password,options:{
+        const {data, error} = await supabase.auth.signUp({email,password,options:{
             data:{username}
         }});
         setLoading(false)
@@ -83,8 +83,22 @@ export default function AuthProvider({children}:{children:React.ReactNode}){
             return {success:false}
         }
         else{
+            // Create profile record in database
+            if(data.user) {
+                const {error: profileError} = await supabase
+                    .from('profiles')
+                    .insert({
+                        id: data.user.id,
+                        username: username
+                    });
+                
+                if(profileError) {
+                    toast.error("Failed to create profile: " + profileError.message);
+                    return {success: false};
+                }
+            }
             router.refresh()
-            return {success:false}
+            return {success:true}
         }
 
         
@@ -94,24 +108,37 @@ export default function AuthProvider({children}:{children:React.ReactNode}){
     async function updateUser(username:string){
 
         setLoading(true)
-        const {error} = await supabase.auth.updateUser({data:{username}});
-
-        setLoading(false)
-
-        if(error){
-            if(error.message == "Database error saving new user"){
+        
+        // Update auth metadata
+        const {error: authError} = await supabase.auth.updateUser({data:{username}});
+        
+        if(authError){
+            setLoading(false)
+            if(authError.message == "Database error saving new user"){
                 toast.error("username already taken")
             }else{
-                toast.error(error.message)
+                toast.error(authError.message)
             }
             return {success:false}
         }
-        else{
-            router.refresh()
-            return {success:true}
 
+        // Update profile in database
+        if(user) {
+            const {error: profileError} = await supabase
+                .from('profiles')
+                .update({username: username})
+                .eq('id', user.id);
+            
+            if(profileError) {
+                setLoading(false)
+                toast.error("Failed to update profile: " + profileError.message);
+                return {success: false};
+            }
         }
 
+        setLoading(false)
+        router.refresh()
+        return {success:true}
 
     }
 
