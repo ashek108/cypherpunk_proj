@@ -61,10 +61,10 @@ function PostItemContent({postId,username,content,commentCount,likeCount,likedBy
                         <LuMessageCircle className="mr-1  h-5 w-5"/>
                         <span>{commentCount}</span>
                     </button>
+                    <LikeCount 
+                    likeCount = {likeCount} likedByUser={likedByUser}
+                    />
                 </div>
-                <LikeCount 
-                likeCount = {likeCount} likedByUser={likedByUser}
-                />
             </div>
         </div>
     )
