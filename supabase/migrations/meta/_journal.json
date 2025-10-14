@@ -8,6 +8,13 @@
       "when": 1759816940919,
       "tag": "0000_familiar_morlun",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1760465026842,
+      "tag": "0001_complete_nekra",
+      "breakpoints": true
     }
   ]
 }

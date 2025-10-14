@@ -10,8 +10,8 @@ interface AuthConnection{
     user:User|null,
     loading:boolean,
     handleSignOut:()=>Promise<void> ;
-    handleLogin:(email:string,password:string) => Promise<void>;
-    handleSignUp:(email:string,username:string,password:string)=> Promise<void>;
+    handleLogin:(email:string,password:string) => Promise<{success:boolean}>;
+    handleSignUp:(email:string,username:string,password:string)=> Promise<{success:boolean}>;
     updateUser:(username:string)=> Promise<{success:boolean}>;
 }
 
@@ -23,7 +23,7 @@ export default function AuthProvider({children}:{children:React.ReactNode}){
     const router = useRouter();
     const supabase = createBrowserClient()
     const [user,setUser] = useState<User|null>(null)
-    const [loading,setLoading] = useState<boolean>(true);
+    const [loading,setLoading] = useState<boolean>(false);
 
     useEffect(()=>{
         const {data} = supabase.auth.onAuthStateChange((event,session)=>{
@@ -53,54 +53,11 @@ export default function AuthProvider({children}:{children:React.ReactNode}){
     async function handleLogin(email:string,password:string){
         setLoading(true)
         const {error} = await supabase.auth.signInWithPassword({email,password});
+        setLoading(false)
         if(error){
             toast.error(error.message)
-
-        }
-        else{
-            router.refresh()
-
-        }
-
-        setLoading(false)
-
-    }
-
-    async function handleSignUp(email:string,username:string,password:string){
-        setLoading(true)
-        const {error} = await supabase.auth.signUp({email,password,options:{
-            data:{username}
-        }});
-        if(error){
-            if(error.message == "Database error saving new user"){
-                toast.error("username already taken")
-            }
-            toast.error(error.message)
-
-        }
-        else{
-            router.refresh()
-
-        }
-
-        setLoading(false)
-
-    }
-
-    async function updateUser(username:string){
-
-        setLoading(true)
-        const {error} = await supabase.auth.updateUser({data:{username}});
-
-        setLoading(false)
-
-        if(error){
-            if(error.message == "Database error saving new user"){
-                toast.error("username already taken")
-            }else{
-                toast.error(error.message)
-            }
             return {success:false}
+            
         }
         else{
             router.refresh()
@@ -108,6 +65,80 @@ export default function AuthProvider({children}:{children:React.ReactNode}){
 
         }
 
+        
+
+    }
+
+    async function handleSignUp(email:string,username:string,password:string){
+        setLoading(true)
+        const {data, error} = await supabase.auth.signUp({email,password,options:{
+            data:{username}
+        }});
+        setLoading(false)
+        if(error){
+            if(error.message == "Database error saving new user"){
+                toast.error("username already taken")
+            }
+            toast.error(error.message)
+            return {success:false}
+        }
+        else{
+            // Create profile record in database
+            if(data.user) {
+                const {error: profileError} = await supabase
+                    .from('profiles')
+                    .insert({
+                        id: data.user.id,
+                        username: username
+                    });
+                
+                if(profileError) {
+                    toast.error("Failed to create profile: " + profileError.message);
+                    return {success: false};
+                }
+            }
+            router.refresh()
+            return {success:true}
+        }
+
+        
+
+    }
+
+    async function updateUser(username:string){
+
+        setLoading(true)
+        
+        // Update auth metadata
+        const {error: authError} = await supabase.auth.updateUser({data:{username}});
+        
+        if(authError){
+            setLoading(false)
+            if(authError.message == "Database error saving new user"){
+                toast.error("username already taken")
+            }else{
+                toast.error(authError.message)
+            }
+            return {success:false}
+        }
+
+        // Update profile in database
+        if(user) {
+            const {error: profileError} = await supabase
+                .from('profiles')
+                .update({username: username})
+                .eq('id', user.id);
+            
+            if(profileError) {
+                setLoading(false)
+                toast.error("Failed to update profile: " + profileError.message);
+                return {success: false};
+            }
+        }
+
+        setLoading(false)
+        router.refresh()
+        return {success:true}
 
     }
 
