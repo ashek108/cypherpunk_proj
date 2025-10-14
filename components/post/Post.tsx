@@ -4,6 +4,8 @@ import Avatar from "../ui/Avatar"
 import ProfileLink from "../profile/ProfileLink"
 import { useRouter } from "next/navigation"
 import PostContent from "./PostContent"
+import { LuMessageCircle } from "react-icons/lu"
+import LikeCount from "./LikeCount"
 
 
 interface PostProps{
@@ -54,6 +56,15 @@ function PostItemContent({postId,username,content,commentCount,likeCount,likedBy
                     </div>)}
                 </div>
                 <PostContent content={content}/>
+                <div className="flex justify-between text-gray-500">
+                    <button className="flex items-center">
+                        <LuMessageCircle className="mr-1  h-5 w-5"/>
+                        <span>{commentCount}</span>
+                    </button>
+                </div>
+                <LikeCount 
+                likeCount = {likeCount} likedByUser={likedByUser}
+                />
             </div>
         </div>
     )
