@@ -1,6 +1,7 @@
 
 import Header from "@/components/layout/Header";
 import Post from "@/components/post/Post";
+import { getServerUserId } from "@/lib/auth/getServerUserId";
 import { db, likes, posts, profiles } from "@/lib/db";
 import { eq,sql } from "drizzle-orm";
 import { notFound } from "next/navigation";
@@ -31,6 +32,7 @@ interface PostPageProps{
 
 
 export default async function PostPage({params}:PostPageProps){
+    const userId = await getServerUserId();
     const post = await getPostDetails((await params).postId)
     if(!post){
         notFound()
