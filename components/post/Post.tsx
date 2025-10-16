@@ -68,8 +68,7 @@ function PostItemContent({postId,username,content,commentCount,likeCount,likedBy
                     />
                     <SharePost postId={postId}/>
 
-                    {/* START YOUR RETARDED SHIT FROM HERE */}
-                    <INVEST/>
+                    {!parentId && <INVEST/>}
 
                 </div>
             </div>

@@ -17,6 +17,7 @@ async function getPostDetails(postId:string,userId?:string){
         content:posts.content,
         createdAt:posts.createdAt,
         profileId:posts.profileid,
+        parentId: posts.parentId,
         username:profiles.username,
         likeCount:sql<number>`CAST(COUNT(DISTINCT ${likes.id}) as int)`,
         ...(userId?{likedByUser:sql<boolean>`count(${userLikes.id}) > 0`}
@@ -33,6 +34,7 @@ async function getPostDetails(postId:string,userId?:string){
         content:posts.content,
         createdAt:posts.createdAt,
         profileId:posts.profileid,
+        parentId: posts.parentId,
         username:profiles.username,
         likeCount:sql<number>`CAST(COUNT(DISTINCT ${likes.id}) as int)`,
         commentCount:sql<number>`CAST(COUNT(DISTINCT ${childPosts.id}) as int)`,

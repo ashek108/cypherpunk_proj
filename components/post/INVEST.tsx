@@ -1,14 +1,12 @@
-import { MdOutlineAttachMoney } from "react-icons/md";
+
+import { LuDollarSign } from "react-icons/lu"
 
 export default function INVEST() {
-    function invest(){
-
-    } 
-
     return (
-    <button>
-        <MdOutlineAttachMoney className="h-6 w-6" />
-      
-    </button>
-  )
+        <button className="ml-3 flex items-center text-gray-500 hover:text-black">
+            <LuDollarSign className="h-5 w-5" />
+            <span className="ml-1">Invest</span>
+        </button>
+    )
 }
+
