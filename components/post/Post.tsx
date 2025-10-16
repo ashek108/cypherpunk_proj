@@ -7,6 +7,7 @@ import PostContent from "./PostContent"
 import { LuMessageCircle } from "react-icons/lu"
 import LikeCount from "./LikeCount"
 import SharePost from "./SharePost"
+import INVEST from "./INVEST"
 
 
 interface PostProps{
@@ -66,6 +67,9 @@ function PostItemContent({postId,username,content,commentCount,likeCount,likedBy
                     likeCount = {likeCount} likedByUser={likedByUser} postId={postId}
                     />
                     <SharePost postId={postId}/>
+
+                    {/* START YOUR RETARDED SHIT FROM HERE */}
+                    <INVEST/>
 
                 </div>
             </div>
