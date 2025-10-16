@@ -1,5 +1,7 @@
 import { LuHeart } from "react-icons/lu"
 import RequiresAuth from "../auth/RequiresAuth"
+import React, { useOptimistic, useTransition } from "react"
+import { likePost, unlikePost } from "@/lib/actions/unlikePost"
 
 interface LikeCountProps{
     likeCount:number
@@ -8,12 +10,34 @@ interface LikeCountProps{
 }
 
 export default function LikeCount({postId, likeCount,likedByUser}:LikeCountProps) {
+  const [pending,startTransition] = useTransition()
+
+  const [optimisticLikeCount ,setoptimisticLikeCount] = useOptimistic(likeCount)
+  const [optimisticLikedByUser ,setoptimisticLikedByUser] = useOptimistic(likedByUser)
+ 
+  function likeOrDislikePost(e:React.MouseEvent){
+    e.preventDefault()
+    e.stopPropagation()
+    startTransition(async ()=>{
+      if(optimisticLikedByUser){
+        setoptimisticLikedByUser(false)
+        setoptimisticLikeCount(optimisticLikeCount-1)
+        await unlikePost(postId)
+      }else{
+        setoptimisticLikedByUser(true)
+        setoptimisticLikeCount(optimisticLikeCount+1)
+        await likePost(postId)
+      }
+    })
+
+
+  }
   return (
     <div className="flex">
-        <RequiresAuth>
-            <LuHeart className={`mr-1 h-5 w-5 ${likedByUser?'fill-red-500 text-red-500':'hover:fill-red-300'} `}/>
+        <RequiresAuth className="flex items-center " onClick={likeOrDislikePost}>
+            <LuHeart className={`mr-1 h-5 w-5 ${optimisticLikedByUser?'fill-red-500 text-red-500':'hover:fill-red-300'} `}/>
         </RequiresAuth>
-        <span>{likeCount}</span>
+        <span>{optimisticLikeCount}</span>
     </div>
   )
 }
