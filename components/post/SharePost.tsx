@@ -1,4 +1,12 @@
 "use client"
+import { LuShare2 } from "react-icons/lu"
+import { useCallback } from "react"
+
+interface SharePostProps {
+    postId: string
+}
+
+
 import { LuShare } from "react-icons/lu";
 import { toast } from "sonner";
 

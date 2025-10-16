@@ -1,24 +1,30 @@
+"use server"
 import { eq,and } from "drizzle-orm"
 import { getServerUserId } from "../auth/getServerUserId"
 import { db, likes } from "../db"
 import { revalidatePath } from "next/cache"
 
-export async function unlikePost(postId:string){
-
-}
-export async function likePost(postId:string){
-    const userId =await getServerUserId()
-    if(userId){
-        const existingLike = await db.select().from(likes)
-        .where(and(eq(likes.profileId,userId),eq(likes.postId,postId)))    
-        if(existingLike.length){
-            return;
-        }    
-        await db.insert(likes).values({postId,profileId:userId})
-
-
+export async function unlikePost(postId:string,path:string){
+    const userId = await getServerUserId()
+    if(!userId){
+        return
     }
-    revalidatePath(`/post/${postId}`)
+    await db.delete(likes)
+        .where(and(eq(likes.profileId, userId), eq(likes.postId, postId)))
+    revalidatePath(path)
+}
+export async function likePost(postId:string,path:string){
+    const userId = await getServerUserId()
+    if(!userId){
+        return
+    }
+    const existingLike = await db.select().from(likes)
+        .where(and(eq(likes.profileId,userId),eq(likes.postId,postId)))
+    if(existingLike.length){
+        return
+    }
+    await db.insert(likes).values({postId,profileId:userId})
+    revalidatePath(path)
 }
 
 

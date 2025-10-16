@@ -2,6 +2,7 @@ import { LuHeart } from "react-icons/lu"
 import RequiresAuth from "../auth/RequiresAuth"
 import React, { useOptimistic, useTransition } from "react"
 import { likePost, unlikePost } from "@/lib/actions/unlikePost"
+import { usePathname } from "next/navigation"
 
 interface LikeCountProps{
     likeCount:number
@@ -10,6 +11,7 @@ interface LikeCountProps{
 }
 
 export default function LikeCount({postId, likeCount,likedByUser}:LikeCountProps) {
+  const pathname = usePathname()
   const [pending,startTransition] = useTransition()
 
   const [optimisticLikeCount ,setoptimisticLikeCount] = useOptimistic(likeCount)
@@ -22,11 +24,11 @@ export default function LikeCount({postId, likeCount,likedByUser}:LikeCountProps
       if(optimisticLikedByUser){
         setoptimisticLikedByUser(false)
         setoptimisticLikeCount(optimisticLikeCount-1)
-        await unlikePost(postId)
+        await unlikePost(postId,pathname)
       }else{
         setoptimisticLikedByUser(true)
         setoptimisticLikeCount(optimisticLikeCount+1)
-        await likePost(postId)
+        await likePost(postId,pathname)
       }
     })
 
