@@ -35,7 +35,7 @@ async function getPostDetails(postId:string,userId?:string){
         profileId:posts.profileid,
         username:profiles.username,
         likeCount:sql<number>`CAST(COUNT(DISTINCT ${likes.id}) as int)`,
-        commentCount:sql<number>`CAST (COUNT(DISTINCT ${childPosts.id} as int"))`,
+        commentCount:sql<number>`CAST(COUNT(DISTINCT ${childPosts.id}) as int)`,
         ...(userId?{likedByUser:sql<boolean>`count(${userLikes.id}) > 0`}
             :{})
     }).from(posts).innerJoin(profiles,eq(posts.profileid,profiles.id))
@@ -71,7 +71,7 @@ export default async function PostPage({params}:PostPageProps){
             <h1>Posts</h1>
         </Header>
         <Post {...post} commentCount={0}  />
-        <NewPostForm parentId={(await params).postId}/>
+        <NewPostForm parentId={(await params).postId} replyToUsername={post.username} />
         {replies.map(reply=>(<Post {...reply} key={reply.postId} />))}
         </div>
 }

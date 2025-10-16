@@ -12,26 +12,35 @@ interface NewPostForm{
     parentId?:string;
     autoFocus?:boolean;
     onPostCreated?:()=>void;
+    replyToUsername?: string;
 }
 
-export default function NewPostForm({parentId,onPostCreated,autoFocus=false,className}:NewPostForm) {
+export default function NewPostForm({parentId,onPostCreated,autoFocus=false,className,replyToUsername}:NewPostForm) {
   const {user} = useAuth()
   const ref = useRef<HTMLFormElement>(null)
   async function handleFormAction(formData:FormData){
     const {success}= await createPost(formData)
     if(success){
-      toast("Post Created")
+      if (parentId) {
+        toast("Reply posted")
+      } else {
+        toast("Post created")
+      }
       if(onPostCreated){
         onPostCreated()
       }
       ref?.current?.reset()
     }
     else{
-      toast.error("Post couldn't be created!")
+      if (parentId) {
+        toast.error("Reply couldn't be posted!")
+      } else {
+        toast.error("Post couldn't be created!")
+      }
     }
   }
   return (
-    <form className={`border-b border-gray-200 p-4 ${className}`}
+    <form className={`border-b border-gray-200 ${parentId?"p-3":"p-4"} ${className}`}
     action={handleFormAction} ref={ref}
     >
         <div className='mb-4 flex w-full items-start gap-4'>
@@ -40,15 +49,15 @@ export default function NewPostForm({parentId,onPostCreated,autoFocus=false,clas
             required 
             autoFocus={autoFocus} 
             maxLength={250}
-            rows={3}
-            placeholder="What's happening.." 
+            rows={parentId?2:3}
+            placeholder={parentId?`Reply to @${replyToUsername ?? ''}`:"What's happening.."} 
             className='w-full rounded-lg p-2 text-xl placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 '
             />
             {parentId && <input type='hidden' name='parentId' value={parentId} />}
         </div>
         <div className='flex items-center justify-end'>
             <RequiresAuth>
-              <SubmitButton>Post</SubmitButton>
+              <SubmitButton>{parentId?"Reply":"Post"}</SubmitButton>
             </RequiresAuth>
         </div>
     </form>
