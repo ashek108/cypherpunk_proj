@@ -1,4 +1,5 @@
 import Header from "@/components/layout/Header";
+import FollowButton from "@/components/profile/FollowButton";
 import Avatar from "@/components/ui/Avatar";
 import { getProfileByUsername } from "@/lib/data/profile/getProfile";
 import { notFound } from "next/navigation";
@@ -29,6 +30,7 @@ export default async function ProfileUsernamePage({
         {!isOwnProfile && 
           <div className="flex w-full items-center justify-between">
             <h1>{usernameParsed}</h1>
+            <FollowButton />
           </div>
         }
         </div>
