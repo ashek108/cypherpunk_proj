@@ -1,4 +1,4 @@
-"user client"
+"use client"
 import React, { useOptimistic, useTransition } from "react";
 import RequiresAuth from "../auth/RequiresAuth";
 import { followProfile, unfollowProfile } from "@/lib/actions/follows";

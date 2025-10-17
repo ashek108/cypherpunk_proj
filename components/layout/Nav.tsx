@@ -1,6 +1,6 @@
 "use client"
 import { usePathname } from "next/navigation";
-import { FaHome,FaSearch,FaUser, } from "react-icons/fa";
+import { FaHome,FaUser, } from "react-icons/fa";
 import { RiLoginBoxFill } from "react-icons/ri";
 import Link from "next/link";
 import { useAuth } from "@/lib/providers/AuthProvider";
@@ -12,7 +12,6 @@ export default function Nav() {
     const pathname = usePathname();
     const links = [
         {icon:FaHome,text:'Home',link:"/home"},
-        {icon:FaSearch, text:'Explore',link:"/explore"},
         {icon:FaUser, text:"Profile",link:"/profile"},
         ...(user?[{icon:LuLogOut,text:'Logout',onclick :handleSignOut}]:[{icon:RiLoginBoxFill,text:"Login",link:"/login"}])
     ]
