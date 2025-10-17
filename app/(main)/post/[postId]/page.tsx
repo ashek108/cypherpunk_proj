@@ -21,7 +21,7 @@ export default async function PostPage({params}:PostPageProps){
         notFound()
     }
     return <div>
-        <Header>
+        <Header hasBackButton>
             <h1>Posts</h1>
         </Header>
         <Post {...post} commentCount={0}  />
