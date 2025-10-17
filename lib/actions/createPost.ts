@@ -1,8 +1,9 @@
 "use server";
 import {z} from "zod"
 import { getServerUserId } from "../auth/getServerUserId";
-import { db, hashtags, postHashtags, posts } from "../db";
-import { hashtagRegex } from "../constants";
+import { createReadOnlyServerClient } from "@/supabase/clients/server";
+import { db, posts, profiles } from "../db";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 
@@ -18,6 +19,25 @@ export async function createPost(formData:FormData){
         if(!userId){
             throw new Error("User not found");           
         }
+        
+        // Check if profile exists, create if it doesn't
+        const existingProfile = await db.select().from(profiles).where(eq(profiles.id, userId)).limit(1);
+        if(existingProfile.length === 0){
+            // Try to get username from auth metadata and create profile
+            const supabase = await createReadOnlyServerClient();
+            const {data: {user}} = await supabase.auth.getUser();
+            const username = user?.user_metadata?.username;
+            
+            if(!username){
+                throw new Error("User profile not found and no username available. Please sign out and sign in again.");
+            }
+            
+            // Create the missing profile
+            await db.insert(profiles).values({
+                id: userId,
+                username: username
+            });
+        }
         const contentSubmission = formData.get("content")
         const parentIdSubmission = formData.get("parentId")
         const {content,parentId} = createPostSchema.parse({
@@ -31,32 +51,13 @@ export async function createPost(formData:FormData){
         revalidatePath("/")
         return {success:true}
     } catch (error) {
-        return {success:false}
+        console.error("Error creating post:", error);
+        return {success:false, error: error instanceof Error ? error.message : "Unknown error"}
         
     }
 }
 
-function extractHashtags(content:string){
-    return content.match(hashtagRegex)?.map(tag=>tag.slice(1).toLocaleLowerCase().trim())??[]
-} 
-
-
 async function createPostRecord(userId:string,content:string,parentId?:string){
-    return await db.transaction(async (tx)=>{
-        const [newPost] = await tx.insert(posts).values({profileid:userId,content,parentId})
-        .returning()
-        const extractedHashtags = extractHashtags(content)
-        for (const hashtagName of extractedHashtags){
-            const [hashtag] = await tx.insert(hashtags).values({name:hashtagName}).onConflictDoUpdate
-            ({target:hashtags.name,set:{name:hashtagName}}).returning();
-            await tx.insert(postHashtags).values({postId:newPost.id,hashtagId:hashtag.id})
-            .onConflictDoNothing()
-
-        }
-
-        return newPost;
-    
-    
-    })
-
+    const [newPost] = await db.insert(posts).values({profileid:userId,content,parentId}).returning()
+    return newPost;
 }

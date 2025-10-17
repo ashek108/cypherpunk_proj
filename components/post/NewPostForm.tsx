@@ -19,8 +19,8 @@ export default function NewPostForm({parentId,onPostCreated,autoFocus=false,clas
   const {user} = useAuth()
   const ref = useRef<HTMLFormElement>(null)
   async function handleFormAction(formData:FormData){
-    const {success}= await createPost(formData)
-    if(success){
+    const result = await createPost(formData)
+    if(result.success){
       if (parentId) {
         toast("Reply posted")
       } else {
@@ -32,10 +32,12 @@ export default function NewPostForm({parentId,onPostCreated,autoFocus=false,clas
       ref?.current?.reset()
     }
     else{
+      const errorMessage = result.error || "Unknown error occurred"
+      console.error("Post creation failed:", errorMessage)
       if (parentId) {
-        toast.error("Reply couldn't be posted!")
+        toast.error(`Reply couldn't be posted: ${errorMessage}`)
       } else {
-        toast.error("Post couldn't be created!")
+        toast.error(`Post couldn't be created: ${errorMessage}`)
       }
     }
   }
