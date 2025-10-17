@@ -30,7 +30,11 @@ export default async function ProfileUsernamePage({
         {!isOwnProfile && 
           <div className="flex w-full items-center justify-between">
             <h1>{usernameParsed}</h1>
-            <FollowButton />
+            <FollowButton 
+            profileId={profile.id}
+            followedByUser={!!profile.followedByUser}
+            username={usernameParsed}
+            />
           </div>
         }
         </div>
