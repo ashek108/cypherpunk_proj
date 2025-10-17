@@ -20,23 +20,22 @@ export default async function ProfileUsernamePage({
   return (
     <div>
       <Header hasBackButton>
-        <div className="flex w-full items-centre gap-2">
+        <div className="flex w-full items-center gap-2">
         <Avatar
           username={profile.username}
           profileId={profile.id}
           link={false}
         /> 
-        
-        {!isOwnProfile && 
-          <div className="flex w-full items-center justify-between">
-            <h1>{usernameParsed}</h1>
+        <div className="flex w-full items-center justify-between">
+          <h1>{usernameParsed}</h1>
+          {!isOwnProfile && (
             <FollowButton 
-            profileId={profile.id}
-            followedByUser={!!profile.followedByUser}
-            username={usernameParsed}
+              profileId={profile.id}
+              followedByUser={!!profile.followedByUser}
+              username={usernameParsed}
             />
-          </div>
-        }
+          )}
+        </div>
         </div>
       </Header>
     </div>

@@ -15,7 +15,7 @@ export async function getCurrentProfileName() {
 }
 export async function getProfileByUsername(username: string) {
   const userId = await getServerUserId();
-  const profileQuerry = db
+  let profileQuerry = db
     .select({
       id: profiles.id,
       username: profiles.username,
@@ -24,7 +24,7 @@ export async function getProfileByUsername(username: string) {
     .from(profiles)
     .where(eq(profiles.username, username));
   if (userId) {
-    profileQuerry.leftJoin(
+    profileQuerry = profileQuerry.leftJoin(
       follows,
       and(eq(follows.followedId, profiles.id), eq(follows.followerId, userId))
     );

@@ -27,4 +27,7 @@ export default function Avatar({profileId,username,size = 48,link=true}:AvatarPr
 
         )
     }
+    return (
+        <img src={avatarPlaceholder} alt={username??profileId} width={size} height={size} className="mr-4 rounded-full" />
+    )
 }
