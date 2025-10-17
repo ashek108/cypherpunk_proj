@@ -45,7 +45,7 @@ export default function AuthProvider({children}:{children:React.ReactNode}){
 
         }
         else{
-            router.refresh();
+            window.location.reload();
         }
         setLoading(false)
     }
