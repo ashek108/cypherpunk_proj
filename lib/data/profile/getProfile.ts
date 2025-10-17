@@ -33,3 +33,15 @@ export async function getProfileByUsername(username: string) {
   const isOwnProfile = profile?.id == userId;
   return { profile: profile ? profile : null, isOwnProfile };
 }
+
+export async function getFollowings(profileId: string) {
+  // Users that the given profile is following
+  const rows = await db
+    .select({ id: profiles.id, username: profiles.username })
+    .from(follows)
+    .leftJoin(profiles, eq(profiles.id, follows.followedId))
+    .where(eq(follows.followerId, profileId));
+  return rows
+    .filter((r) => r.username)
+    .map((r) => ({ id: r.id as string, username: r.username as string }));
+}

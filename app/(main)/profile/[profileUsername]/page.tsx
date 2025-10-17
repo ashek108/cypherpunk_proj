@@ -1,7 +1,10 @@
 import Header from "@/components/layout/Header";
 import FollowButton from "@/components/profile/FollowButton";
 import Avatar from "@/components/ui/Avatar";
+import ProfileTabs from "@/components/profile/ProfileTabs";
 import { getProfileByUsername } from "@/lib/data/profile/getProfile";
+import { getPostsByProfileId } from "@/lib/data/post/getPostDetails";
+import Post from "@/components/post/Post";
 import { notFound } from "next/navigation";
 import React from "react";
 
@@ -16,6 +19,8 @@ export default async function ProfileUsernamePage({
   if (!profile) {
     notFound();
   }
+
+  const posts = await getPostsByProfileId(profile.id);
 
   return (
     <div>
@@ -38,6 +43,12 @@ export default async function ProfileUsernamePage({
         </div>
         </div>
       </Header>
+      <ProfileTabs />
+      <div>
+        {posts.map((p)=> (
+          <Post key={p.postId} {...p} />
+        ))}
+      </div>
     </div>
   );
 }
