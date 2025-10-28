@@ -1,0 +1,37 @@
+{
+  "name": "pump-token-creator-extension",
+  "version": "1.0.0",
+  "description": "Browser extension for creating tokens from tweets and discovering viral posts",
+  "main": "background.js",
+  "scripts": {
+    "build": "echo 'No build step required for manifest v3'",
+    "zip": "zip -r pump-extension.zip . -x '*.git*' 'node_modules/*' '*.DS_Store*' 'package*.json' 'README.md'",
+    "test": "echo 'Load extension in Chrome Developer Mode to test'"
+  },
+  "keywords": [
+    "chrome-extension",
+    "solana",
+    "tokens",
+    "twitter",
+    "pump.fun",
+    "web3",
+    "cryptocurrency"
+  ],
+  "author": "Pump Token Creator Team",
+  "license": "MIT",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "pump-token-creator@example.com"
+    }
+  },
+  "devDependencies": {},
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/pump-token-creator"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/pump-token-creator/issues"
+  },
+  "homepage": "https://github.com/your-username/pump-token-creator#readme"
+}

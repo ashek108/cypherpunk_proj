@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pump Token Creator</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🚀 Pump Token Creator</h1>
+    </div>
+    
+    <!-- Wallet Connection Section -->
+    <div id="wallet-section" class="section">
+      <div id="wallet-disconnected" class="wallet-state">
+        <p>Connect your Solana wallet to get started</p>
+        <button id="connect-wallet" class="btn btn-primary">Connect Wallet</button>
+        <p class="wallet-help">Supports: Phantom, Solflare, Backpack, and more</p>
+      </div>
+      
+      <div id="wallet-connected" class="wallet-state hidden">
+        <div class="wallet-info">
+          <p class="wallet-address">Connected: <span id="wallet-address"></span></p>
+          <button id="disconnect-wallet" class="btn btn-secondary">Disconnect</button>
+        </div>
+      </div>
+
+      <!-- Notification area -->
+      <div id="notification" class="notification hidden">
+        <span id="notification-text"></span>
+      </div>
+    </div>
+
+    <!-- Posts Section -->
+    <div id="posts-tab" class="tab-content active">
+      <div class="section">
+        <h2>🔥 Viral Token Posts</h2>
+        <div class="filter-controls">
+          <select id="sort-filter">
+            <option value="newest">Newest</option>
+            <option value="popular">Most Popular</option>
+            <option value="market-cap">Highest Market Cap</option>
+          </select>
+          <button id="refresh-posts" class="btn btn-icon">🔄</button>
+        </div>
+        
+        <div id="posts-loading" class="loading hidden">
+          <p>Loading viral posts...</p>
+        </div>
+        
+        <div id="posts-container" class="posts-list">
+          <!-- Posts will be populated here -->
+        </div>
+        
+        <div id="posts-empty" class="empty-state hidden">
+          <p>No viral posts found. Be the first to create a token!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Section -->
+    <div class="section">
+      <details class="settings-dropdown">
+        <summary>⚙️ Settings</summary>
+        <div class="settings-content">
+          <label>
+            <input type="checkbox" id="auto-detect"> Auto-detect tokens on tweets
+          </label>
+          <label>
+            <input type="checkbox" id="notifications"> Enable notifications
+          </label>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

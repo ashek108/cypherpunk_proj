@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "Pump Token Creator",
+  "version": "1.0.0",
+  "description": "Create tokens from tweets and discover viral token posts",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting",
+    "notifications",
+    "alarms"
+  ],
+  "host_permissions": [
+    "*://twitter.com/*",
+    "*://x.com/*",
+    "https://pump.fun/*",
+    "https://pumpportal.fun/*",
+    "https://api.mainnet-beta.solana.com/*",
+    "https://rpc.ankr.com/*",
+    "https://solana-mainnet.rpcpool.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://twitter.com/*", "*://x.com/*"],
+      "js": ["solanaWeb3.iife.min.js", "wallet-adapter.js", "content.js"],
+      "css": ["content.css"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Pump Token Creator"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://pump.fun https://pumpportal.fun https://api.mainnet-beta.solana.com https://rpc.ankr.com https://solana-mainnet.rpcpool.com"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["inject.js", "solanaWeb3.iife.min.js"],
+      "matches": ["*://twitter.com/*", "*://x.com/*"]
+    }
+  ]
+}
