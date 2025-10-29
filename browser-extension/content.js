@@ -42,6 +42,10 @@ class PumpExtensionContent {
     this.rpcEndpoints = [...SOLANA_RPC_ENDPOINTS];
     this.rpcEndpointIndex = 0;
     this.rpcEndpoint = this.rpcEndpoints[0];
+    // Ensure we always attempt to mark the very first post
+    this.firstTweetMarked = false;
+    this.firstMarkAttempts = 0;
+    this.maxFirstMarkAttempts = 40; // ~20s with 500ms interval
     this.init();
   }
 
@@ -58,6 +62,8 @@ class PumpExtensionContent {
     setTimeout(() => {
       console.log('Initializing wallet adapter and UI...');
       this.addTokenButtons();
+      // Make sure the first post is always marked early
+      this.ensureFirstTweetMarked();
     }, 2000); // Wait 2 seconds for wallet adapter to load
     
     // Monitor for new tweets (dynamic content)
@@ -67,6 +73,15 @@ class PumpExtensionContent {
     setInterval(() => {
       this.cleanupDuplicateButtons();
     }, 5000); // Every 5 seconds
+
+    // Retry marking the first post a few times in case the DOM is still mounting
+    this.firstMarkTimer = setInterval(() => {
+      if (this.firstTweetMarked || this.firstMarkAttempts >= this.maxFirstMarkAttempts) {
+        clearInterval(this.firstMarkTimer);
+        return;
+      }
+      this.ensureFirstTweetMarked();
+    }, 500);
   }
 
   async getConnection() {
@@ -716,7 +731,7 @@ class PumpExtensionContent {
 
   addTokenButtons() {
     // Add "Create Token" buttons to tweets
-    const tweets = document.querySelectorAll('[data-testid="tweet"]');
+    const tweets = document.querySelectorAll('[data-testid="tweet"], article[role="article"]');
     
     tweets.forEach(tweet => {
       // Multiple checks to prevent duplicate buttons
@@ -790,7 +805,7 @@ class PumpExtensionContent {
     return !!actionBar;
   }
 
-  addTokenButtonToTweet(tweetElement) {
+  addTokenButtonToTweet(tweetElement, options = {}) {
     try {
       // Double-check: Don't add if button already exists
       if (tweetElement.querySelector('.pump-token-btn')) {
@@ -807,7 +822,7 @@ class PumpExtensionContent {
                     || root.querySelector('[data-testid="reply"]')?.parentElement
                     || (groups.length ? groups[groups.length - 1] : null);
 
-      if (!actionBar) {
+      if (!actionBar && !options.force) {
         console.log('No action bar found for tweet, skipping...');
         return false;
       }
@@ -875,11 +890,17 @@ class PumpExtensionContent {
       });
 
       // Try to insert near the Share button if present for consistent layout
-      const shareBtn = actionBar.querySelector('[data-testid="share"]');
-      if (shareBtn && shareBtn.parentElement) {
-        shareBtn.parentElement.after(tokenBtn);
+      if (actionBar) {
+        const shareBtn = actionBar.querySelector('[data-testid="share"]');
+        if (shareBtn && shareBtn.parentElement) {
+          shareBtn.parentElement.after(tokenBtn);
+        } else {
+          actionBar.appendChild(tokenBtn);
+        }
       } else {
-        actionBar.appendChild(tokenBtn);
+        // Fallback: append to the root article when forcing
+        const container = root || tweetElement;
+        container.appendChild(tokenBtn);
       }
       
       // Mark the tweet as having a button
@@ -890,6 +911,39 @@ class PumpExtensionContent {
     } catch (error) {
       console.error('Error adding token button:', error);
       return false;
+    }
+  }
+
+  // Ensure the very first eligible post has a button and is tagged
+  ensureFirstTweetMarked() {
+    try {
+      this.firstMarkAttempts += 1;
+      if (this.firstTweetMarked) return;
+
+      // Get the first likely tweet/article in DOM order
+      const first = document.querySelector('[data-testid="tweet"], article[role="article"]');
+      if (!first) return;
+
+      // If already has our marker, consider it done
+      if (first.getAttribute('data-pump-first') === 'true') {
+        this.firstTweetMarked = true;
+        return;
+      }
+
+      // Try to add a button, forcing placement if action bar not ready
+      const added = this.addTokenButtonToTweet(first, { force: true });
+      if (added) {
+        first.classList.add('pump-first');
+        first.setAttribute('data-pump-first', 'true');
+        if (!first.classList.contains('pump-processed')) {
+          first.classList.add('pump-processed');
+          first.setAttribute('data-pump-processed', 'true');
+        }
+        this.firstTweetMarked = true;
+        console.log('First tweet marked successfully');
+      }
+    } catch (e) {
+      console.warn('Failed to mark first tweet:', e);
     }
   }
 
@@ -1271,13 +1325,13 @@ class PumpExtensionContent {
         mutation.addedNodes.forEach((node) => {
           if (node.nodeType === Node.ELEMENT_NODE) {
             // Check if the node is a tweet or contains tweets
-            if (node.matches && node.matches('[data-testid="tweet"]:not(.pump-processed)')) {
+            if (node.matches && (node.matches('[data-testid="tweet"]:not(.pump-processed)') || node.matches('article[role="article"]:not(.pump-processed)'))) {
               hasNewTweets = true;
-            } else if (node.querySelector && node.querySelector('[data-testid="tweet"]:not(.pump-processed)')) {
+            } else if (node.querySelector && (node.querySelector('[data-testid="tweet"]:not(.pump-processed)') || node.querySelector('article[role="article"]:not(.pump-processed)'))) {
               hasNewTweets = true;
             } else if (node.closest) {
               // If content was added inside an existing tweet (e.g., media/actions), re-process
-              const parentTweet = node.closest('[data-testid="tweet"]');
+              const parentTweet = node.closest('[data-testid="tweet"], article[role="article"]');
               if (parentTweet && !this.isPromotedTweet(parentTweet) && !parentTweet.querySelector('.pump-token-btn')) {
                 hasNewTweets = true;
               }
@@ -1295,6 +1349,7 @@ class PumpExtensionContent {
         addButtonsTimeout = setTimeout(() => {
           console.log('Processing new tweets for token buttons...');
           this.addTokenButtons();
+          this.ensureFirstTweetMarked();
           addButtonsTimeout = null;
         }, 300); // Reduced timeout for better responsiveness
       }
@@ -1310,7 +1365,7 @@ class PumpExtensionContent {
 
   // Clean up function to remove duplicate buttons (just in case)
   cleanupDuplicateButtons() {
-    const tweets = document.querySelectorAll('[data-testid="tweet"]');
+    const tweets = document.querySelectorAll('[data-testid="tweet"], article[role="article"]');
     
     tweets.forEach(tweet => {
       const buttons = tweet.querySelectorAll('.pump-token-btn');
